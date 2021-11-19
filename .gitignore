@@ -1,0 +1,8 @@
+# go
+coverage.txt
+.idea/
+dist/
+
+# web3
+abi/
+sol/
