@@ -15,9 +15,9 @@ type Index struct {
 
 type Network struct {
 	Endpoint  string            `yaml:"endpoint"`
-	Tokens    map[string]string `yaml:"tokens"`
-	Exchanges []Exchange        `yaml:"exchanges"`
-	Markets   []Market          `yaml:"markets"`
+	Tokens    map[string]string `yaml:"tokens,omitempty"`
+	Exchanges []Exchange        `yaml:"exchanges,omitempty"`
+	Markets   []Market          `yaml:"markets,omitempty"`
 }
 
 type Exchange struct {
