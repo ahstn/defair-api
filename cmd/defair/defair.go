@@ -12,17 +12,8 @@ func main() {
 	app := &cli.App{
 		Name: "defair",
 		Commands: []*cli.Command{
-			{
-				Name: "balance",
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:    "network",
-						Aliases: []string{"n"},
-						Value:   "all",
-					},
-				},
-				Action: commands.Balance,
-			},
+			&commands.Balance,
+			&commands.Server,
 		},
 	}
 
