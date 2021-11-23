@@ -13,6 +13,7 @@ func main() {
 		Name: "defair",
 		Commands: []*cli.Command{
 			&commands.Balance,
+			&commands.LiquidityPools,
 			&commands.Server,
 		},
 	}
