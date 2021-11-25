@@ -15,6 +15,7 @@ networks:
     exchanges:
     - name: Trader Joe
       token: 'JOE'
+      controller: 0xdc13687554205E5b89Ac783db14bb5bba4A1eDaC
     markets:
     - name: Trader Joe
       token: 'JOE'

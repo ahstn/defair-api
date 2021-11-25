@@ -19,7 +19,7 @@ var LiquidityPools = cli.Command{
 		},
 	},
 	Action: func(c *cli.Context) error {
-		err := actions.LiquidityPools()
+		err := actions.LiquidityPools(c.Args().Get(0))
 		if err != nil {
 			log.Fatal(err)
 		}
