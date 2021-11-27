@@ -8,7 +8,19 @@ type Wallet struct {
 	Networks []string
 }
 
-// Indexer is a directory of on-chain contract and token Addresses.
+type TokenPair struct {
+	Token0 string
+	Token1 string
+}
+
+type LiquidityPool struct {
+	Address string
+	Balance float32
+	Rewards float32
+	Pair    TokenPair
+}
+
+// Index is a directory of on-chain contract and token Addresses.
 type Index struct {
 	Networks map[string]Network `yaml:"networks"`
 }

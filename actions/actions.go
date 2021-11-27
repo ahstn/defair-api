@@ -1,7 +1,9 @@
 package actions
 
 import (
+	"fmt"
 	"github.com/ahstn/defair/platform"
+	"log"
 )
 
 // LiquidityPools uses platform.Chain to retrieve the Pools a Wallet is
@@ -14,7 +16,14 @@ func LiquidityPools(address string) error {
 	}
 
 	e := platform.EthClient{}
-	err = e.LiquidityPools(address, c.Networks["avalanche"].Endpoint, c.Networks["avalanche"].Markets)
+	lps, err := e.LiquidityPools(address, c.Networks["avalanche"].Endpoint, c.Networks["avalanche"].Markets)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, lp := range lps {
+		fmt.Printf("LP (%s), Balance=[%v], Rewards=[%v]", lp.Address, lp.Balance, lp.Rewards)
+	}
 
 	return nil
 }
