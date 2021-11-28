@@ -14,11 +14,16 @@ type TokenPair struct {
 }
 
 type LiquidityPool struct {
-	Address string
-	Balance float32
-	Rewards float32
-	Pair    TokenPair
-	Market  Market
+	Address string    `json:"address,omitempty"`
+	Balance float32   `json:"balance,omitempty"`
+	Rewards float32   `json:"rewards,omitempty"`
+	Pair    TokenPair `json:"pair,omitempty"`
+	Market  Market    `json:"market,omitempty"`
+}
+
+type DataFilter struct {
+	Networks  []string
+	Protocols []string
 }
 
 // Index is a directory of on-chain contract and token Addresses.
@@ -39,7 +44,7 @@ type Exchange struct {
 }
 
 type Market struct {
-	Name  string   `yaml:"name"`
+	Name  string   `yaml:"name" json:"name"`
 	Token string   `yaml:"token"`
 	Chef  []string `yaml:"chef"`
 }
