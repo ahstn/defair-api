@@ -16,13 +16,18 @@ func LiquidityPools(address string) error {
 	}
 
 	e := platform.EthClient{}
-	lps, err := e.LiquidityPools(address, c.Networks["avalanche"].Endpoint, c.Networks["avalanche"].Markets)
+	avaxPools, err := e.LiquidityPools(address, c.Networks["avalanche"].Endpoint, c.Networks["avalanche"].Markets)
+	if err != nil {
+		log.Fatal(err)
+	}
+	onePools, err := e.LiquidityPools(address, c.Networks["harmony"].Endpoint, c.Networks["harmony"].Markets)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, lp := range lps {
-		fmt.Printf("LP (%s), Balance=[%v], Rewards=[%v]", lp.Address, lp.Balance, lp.Rewards)
+	for _, lp := range append(avaxPools, onePools...) {
+		fmt.Printf("Market=[%s], LP=[%s], Balance=[%v], Rewards=[%v]\n",
+			lp.Market.Name, lp.Address, lp.Balance, lp.Rewards)
 	}
 
 	return nil

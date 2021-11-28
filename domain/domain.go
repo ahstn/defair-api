@@ -18,6 +18,7 @@ type LiquidityPool struct {
 	Balance float32
 	Rewards float32
 	Pair    TokenPair
+	Market  Market
 }
 
 // Index is a directory of on-chain contract and token Addresses.
@@ -38,7 +39,7 @@ type Exchange struct {
 }
 
 type Market struct {
-	Name  string `yaml:"name"`
-	Token string `yaml:"token"`
-	Chef  string `yaml:"chef"`
+	Name  string   `yaml:"name"`
+	Token string   `yaml:"token"`
+	Chef  []string `yaml:"chef"`
 }
