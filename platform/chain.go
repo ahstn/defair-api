@@ -16,7 +16,7 @@ import (
 type Chain interface {
 	NativeBalance() (string, error)
 	Balances() ([]string, error)
-	LiquidityPools()
+	LiquidityPools(string, string, []domain.Market) ([]domain.LiquidityPool, error)
 }
 
 type EthClient struct{}
@@ -176,4 +176,12 @@ func defiKingdomPools(client *ethclient.Client, m domain.Market, a string) ([]do
 	}
 
 	return pools, nil
+}
+
+func (e EthClient) NativeBalance() (string, error) {
+	panic("TODO: implement me")
+}
+
+func (e EthClient) Balances() ([]string, error) {
+	panic("TODO: implement me")
 }

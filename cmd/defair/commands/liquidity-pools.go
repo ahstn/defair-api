@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
 	"log"
 
 	"github.com/ahstn/defair/actions"
@@ -21,9 +22,10 @@ var LiquidityPools = cli.Command{
 		},
 	},
 	Action: func(c *cli.Context) error {
-		pools, err := actions.LiquidityPools(c.Args().Get(0), domain.DataFilter{
-			Networks: []string{"all"},
-		})
+		y := platform.YamlIndex{Path: "./config.yaml"}
+		e := platform.EthClient{}
+		f := domain.DataFilter{Networks: []string{"all"}}
+		pools, err := actions.LiquidityPools(c.Args().Get(0), f, y, e)
 		if err != nil {
 			log.Fatal(err)
 		}

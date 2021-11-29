@@ -24,6 +24,7 @@ func Test_YamlIndex_Read(t *testing.T) {
 					{
 						Name:  "Market1",
 						Token: "Token",
+						Chef: []string{"123"},
 					},
 				},
 			},
@@ -50,7 +51,8 @@ func Test_YamlIndex_Read(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(config, *read) {
+	if !reflect.DeepEqual(config, read) {
 		t.Errorf("Read() got = %+v, expected = %+v", read, config)
+
 	}
 }

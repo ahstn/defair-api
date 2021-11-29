@@ -9,8 +9,9 @@ import (
 
 // LiquidityPools uses platform.Chain to retrieve the Pools a Wallet is
 // providing Liquidity for across multiple networks & protocols.
-func LiquidityPools(address string, filter domain.DataFilter) ([]domain.LiquidityPool, error) {
-	y := platform.YamlIndex{Path: "config.yaml"}
+func LiquidityPools(
+	address string, filter domain.DataFilter, y platform.Indexer, e platform.Chain,
+) ([]domain.LiquidityPool, error) {
 	c, err := y.Read()
 	if err != nil {
 		return []domain.LiquidityPool{}, err
@@ -23,7 +24,6 @@ func LiquidityPools(address string, filter domain.DataFilter) ([]domain.Liquidit
 	}
 
 	var pools []domain.LiquidityPool
-	e := platform.EthClient{}
 	for _, network := range networks {
 		networkPools, err := e.LiquidityPools(address, c.Networks[network].Endpoint, c.Networks[network].Markets)
 		if err != nil {
