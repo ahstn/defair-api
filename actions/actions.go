@@ -1,24 +1,36 @@
 package actions
 
 import (
-	"fmt"
-
+	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/platform"
+	"github.com/thoas/go-funk"
+	"log"
 )
 
 // LiquidityPools uses platform.Chain to retrieve the Pools a Wallet is
 // providing Liquidity for across multiple networks & protocols.
-func LiquidityPools() error {
-	y := platform.YamlIndex{Path: "config.yaml"}
+func LiquidityPools(
+	address string, filter domain.DataFilter, y platform.Indexer, e platform.Chain,
+) ([]domain.LiquidityPool, error) {
 	c, err := y.Read()
 	if err != nil {
-		return err
+		return []domain.LiquidityPool{}, err
 	}
 
-	fmt.Println("Avax Tokens")
-	for k, v := range c.Networks["avalanche"].Tokens {
-		fmt.Printf("Avalanche Token: %q - %q\n", k, v)
+	// if the filter isn't "all", intersect is used to ensure the Network Names provided match valid IDs.
+	networks := []string{"avalanche", "harmony"}
+	if len(filter.Networks) >= 1 && !funk.Contains(filter.Networks, "all") {
+		networks = funk.IntersectString(networks, filter.Networks)
 	}
 
-	return nil
+	var pools []domain.LiquidityPool
+	for _, network := range networks {
+		networkPools, err := e.LiquidityPools(address, c.Networks[network].Endpoint, c.Networks[network].Markets)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pools = append(pools, networkPools...)
+	}
+
+	return pools, nil
 }

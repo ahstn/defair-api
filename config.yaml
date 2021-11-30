@@ -15,14 +15,22 @@ networks:
     exchanges:
     - name: Trader Joe
       token: 'JOE'
+      controller: 0xdc13687554205E5b89Ac783db14bb5bba4A1eDaC
     markets:
     - name: Trader Joe
       token: 'JOE'
-      chef: 0xd6a4f121ca35509af06a0be99093d08462f53052
+      chef:
+      - 0xd6a4f121ca35509af06a0be99093d08462f53052
+      - 0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00
     rebasers:
     - name: Wonderland
       token: 'TIME'
   harmony:
     endpoint: https://api.harmony.one
+    markets:
+    - name: Defi Kingdoms
+      token: 'JEWEL'
+      chef:
+      - 0xdb30643c71ac9e2122ca0341ed77d09d5f99f924
   fantom:
     endpoint: https://rpc.ftm.tools

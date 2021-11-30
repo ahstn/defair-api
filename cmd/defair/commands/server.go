@@ -21,7 +21,7 @@ var Server = cli.Command{
 	Action: func(c *cli.Context) error {
 		r := gin.Default()
 		r.GET("/wallet/:address", endpoints.Balance)
-		r.Run(fmt.Sprintf(":%s", c.String("port")))
-		return nil
+		r.GET("/pools/:address", endpoints.LiquidityPools)
+		return r.Run(fmt.Sprintf(":%s", c.String("port")))
 	},
 }
