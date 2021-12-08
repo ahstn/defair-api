@@ -34,8 +34,6 @@ const main = async(): Promise<any> => {
     const chef: Contract = new ethers.Contract(joeAddress, MASTERCHEF_PARTIAL_ABI, provider)
     const poolLength : BigNumber  = await chef.poolLength()
 
-    /* eslint functional/no-loop-statement: 0 */
-    /* eslint functional/no-let: 0 */
     for (let i = 0; i < poolLength.toNumber(); i++) {
       const pool : PoolInfo = await chef.poolInfo(i)
       const [balance, rewards] = await chef.userInfo(i, address) as readonly [BigNumber, BigNumber]
