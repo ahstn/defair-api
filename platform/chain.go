@@ -18,6 +18,7 @@ type Chain interface {
 	LiquidityPools(string, domain.Network) ([]domain.LiquidityPool, error)
 }
 
+// EthClient holds the necessary values for preforming calls to an EVM network API.
 type EthClient struct{}
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
@@ -30,7 +31,7 @@ func (e EthClient) LiquidityPools(address string, network domain.Network) ([]dom
 	}
 
 	for _, m := range network.Markets {
-		abi := DetermineChefABI(m.Name)
+		abi := determineChefABI(m.Name)
 
 		for _, c := range m.Chef {
 			marketPools, err := fetchPoolsFromChefContact(
@@ -46,7 +47,7 @@ func (e EthClient) LiquidityPools(address string, network domain.Network) ([]dom
 	return pools, nil
 }
 
-func DetermineChefABI(name string) *bind.MetaData {
+func determineChefABI(name string) *bind.MetaData {
 	switch name {
 	case "Defi Kingdoms":
 		return contracts.DFKChefMetadata
@@ -100,23 +101,27 @@ func fetchPoolsFromChefContact(
 	return pools, nil
 }
 
-// transformTokenPair fetches metadata for the underlying Tokens from LP Token Contract
-// TODO: Fetch Token Symbols
-func transformTokenPair(client *ethclient.Client, token common.Address) (domain.TokenPair) {
+// transformTokenPair fetches metadata for the underlying Tokens from LP Token Contract.
+// TODO: When Pooled Connections are working fetch Token Symbols.
+func transformTokenPair(client *ethclient.Client, token common.Address) domain.TokenPair {
 	// If lpToken doesn't have 'Token0()' assume it's a Token, not a Token Pair (i.e. single sided pool)
 	lpToken, _ := contracts.NewTokenPair(token, client)
 	token0, err0 := lpToken.Token0(nil)
 	token1, err1 := lpToken.Token1(nil)
 	if err0 != nil || err1 != nil {
 		return domain.TokenPair{
-			Token0: token.String(),
-			Token1: token.String(),
+			Token0: domain.Token{Address: token.String()},
+			Token1: domain.Token{Address: token.String()},
 		}
 	}
 
 	return domain.TokenPair{
-		Token0: token0.String(),
-		Token1: token1.String(),
+		Token0: domain.Token{
+			Address: token0.String(),
+		},
+		Token1: domain.Token{
+			Address: token1.String(),
+		},
 	}
 }
 
