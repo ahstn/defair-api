@@ -25,7 +25,7 @@ func LiquidityPools(
 
 	var pools []domain.LiquidityPool
 	for _, network := range networks {
-		networkPools, err := e.LiquidityPools(address, c.Networks[network].Endpoint, c.Networks[network].Markets)
+		networkPools, err := e.LiquidityPools(address, c.Networks[network])
 		if err != nil {
 			log.Fatal(err)
 		}

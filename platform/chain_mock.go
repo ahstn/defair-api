@@ -50,18 +50,18 @@ func (mr *MockChainMockRecorder) Balances() *gomock.Call {
 }
 
 // LiquidityPools mocks base method.
-func (m *MockChain) LiquidityPools(arg0, arg1 string, arg2 []domain.Market) ([]domain.LiquidityPool, error) {
+func (m *MockChain) LiquidityPools(arg0 string, arg1 domain.Network) ([]domain.LiquidityPool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LiquidityPools", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "LiquidityPools", arg0, arg1)
 	ret0, _ := ret[0].([]domain.LiquidityPool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // LiquidityPools indicates an expected call of LiquidityPools.
-func (mr *MockChainMockRecorder) LiquidityPools(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockChainMockRecorder) LiquidityPools(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LiquidityPools", reflect.TypeOf((*MockChain)(nil).LiquidityPools), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LiquidityPools", reflect.TypeOf((*MockChain)(nil).LiquidityPools), arg0, arg1)
 }
 
 // NativeBalance mocks base method.
