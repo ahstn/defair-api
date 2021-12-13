@@ -44,7 +44,7 @@ func Test_LiquidityProvider_SingleNetwork(t *testing.T) {
 
 	y.EXPECT().Read().Return(config, nil).AnyTimes()
 	e.EXPECT().
-		LiquidityPools(gomock.Any(), config.Networks["avalanche"].Endpoint, config.Networks["avalanche"].Markets).
+		LiquidityPools(gomock.Any(), config.Networks["avalanche"]).
 		Times(1)
 
 	_, err := LiquidityPools("0x123", f, y, e)
@@ -64,10 +64,10 @@ func Test_LiquidityProvider_AllNetworks(t *testing.T) {
 	y.EXPECT().Read().Return(config, nil).AnyTimes()
 
 	e.EXPECT().
-		LiquidityPools(gomock.Any(), config.Networks["avalanche"].Endpoint, config.Networks["avalanche"].Markets).
+		LiquidityPools(gomock.Any(), config.Networks["avalanche"]).
 		Times(1)
 	e.EXPECT().
-		LiquidityPools(gomock.Any(), config.Networks["harmony"].Endpoint, config.Networks["harmony"].Markets).
+		LiquidityPools(gomock.Any(), config.Networks["harmony"]).
 		Times(1)
 
 	_, err := LiquidityPools("0x123", f, y, e)
