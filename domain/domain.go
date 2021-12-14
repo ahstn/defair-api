@@ -16,22 +16,25 @@ type TokenPair struct {
 
 // Token represents an ERC20 Token's address & symbol.
 type Token struct {
-	Address string
-	Symbol string
+	Address  string
+	Symbol   string
+	Name     string
+	Balance  float64
+	Decimals int
 }
 
 // LiquidityPool represents a pool existing of two ERC20 Tokens to provide liquidity for.
 type LiquidityPool struct {
 	// Address is the EVM address of the LP's smart contract.
-	Address string    `json:"address,omitempty"`
+	Address string `json:"address,omitempty"`
 	// Balance is the user's balance for the LP.
-	Balance float32   `json:"balance,omitempty"`
+	Balance float64 `json:"balance,omitempty"`
 	// Rewards is the user's outstanding reward amount.
-	Rewards float32   `json:"rewards,omitempty"`
+	Rewards float64 `json:"rewards,omitempty"`
 	// Pair is the LP's underlying TokenPair / assets.
-	Pair    TokenPair `json:"pair,omitempty"`
+	Pair TokenPair `json:"pair,omitempty"`
 	// Market is the Market which the LP belongs to.
-	Market  Market    `json:"market,omitempty"`
+	Market Market `json:"market,omitempty"`
 }
 
 // DataFilter is used to filter operations throughout the API.
@@ -48,10 +51,10 @@ type Index struct {
 
 // Network represents different data for a specific EVM network, including it's RPC API Endpoint.
 type Network struct {
-	Endpoint  string            `yaml:"endpoint"`
-	Tokens    map[string]string `yaml:"tokens,omitempty"`
-	Exchanges []Exchange        `yaml:"exchanges,omitempty"`
-	Markets   []Market          `yaml:"markets,omitempty"`
+	Endpoint  string     `yaml:"endpoint"`
+	Tokens    []string   `yaml:"tokens,omitempty"`
+	Exchanges []Exchange `yaml:"exchanges,omitempty"`
+	Markets   []Market   `yaml:"markets,omitempty"`
 }
 
 // Exchange represents an on-chain Exchange, it's Governance Token and related Smart Contracts.

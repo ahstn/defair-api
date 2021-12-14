@@ -73,9 +73,9 @@ func (_Token *TokenCaller) Allowance(opts *bind.CallOpts, _owner common.Address,
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
-func (_Token *TokenCaller) BalanceOf(opts *bind.CallOpts, _owner common.Address) (*big.Int, error) {
+func (_Token *TokenCaller) BalanceOf(_owner common.Address) (*big.Int, error) {
 	var out []interface{}
-	err := _Token.contract.Call(opts, &out, "balanceOf", _owner)
+	err := _Token.contract.Call(nil, &out, "balanceOf", _owner)
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -87,9 +87,9 @@ func (_Token *TokenCaller) BalanceOf(opts *bind.CallOpts, _owner common.Address)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
-func (_Token *TokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
+func (_Token *TokenCaller) Decimals() (uint8, error) {
 	var out []interface{}
-	err := _Token.contract.Call(opts, &out, "decimals")
+	err := _Token.contract.Call(nil, &out, "decimals")
 
 	if err != nil {
 		return *new(uint8), err
@@ -101,9 +101,9 @@ func (_Token *TokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
-func (_Token *TokenCaller) Name(opts *bind.CallOpts) (string, error) {
+func (_Token *TokenCaller) Name() (string, error) {
 	var out []interface{}
-	err := _Token.contract.Call(opts, &out, "name")
+	err := _Token.contract.Call(nil, &out, "name")
 
 	if err != nil {
 		return *new(string), err
@@ -115,9 +115,9 @@ func (_Token *TokenCaller) Name(opts *bind.CallOpts) (string, error) {
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
-func (_Token *TokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
+func (_Token *TokenCaller) Symbol() (string, error) {
 	var out []interface{}
-	err := _Token.contract.Call(opts, &out, "symbol")
+	err := _Token.contract.Call(nil, &out, "symbol")
 	if err != nil {
 		return *new(string), err
 	}
@@ -128,9 +128,9 @@ func (_Token *TokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
-func (_Token *TokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
+func (_Token *TokenCaller) TotalSupply() (*big.Int, error) {
 	var out []interface{}
-	err := _Token.contract.Call(opts, &out, "totalSupply")
+	err := _Token.contract.Call(nil, &out, "totalSupply")
 
 	if err != nil {
 		return *new(*big.Int), err

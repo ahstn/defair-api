@@ -4,14 +4,30 @@
 networks:
   avalanche:
     endpoint: https://api.avax.network/ext/bc/C/rpc
+    # Eventually this will support token lists also.
+    # We wanna maintain the ability to add custom tokens, but some lists are going be more actively maintained.
+    # Token names, balances, etc can still be additionally cached.
     tokens:
-      wAVAX: 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7
-      JOE: 0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd
-      MIM: 0x130966628846BFd36ff31a822705796e8cb8C18D
-      TIME: 0xb54f16fb19478766a268f172c9480f8da1a7c9c3
-      MEMO: 0x136Acd46C134E8269052c62A67042D6bDeDde3C9
-      SB: 0x7d1232B90D3F809A54eeaeeBC639C62dF8a8942f
-      sSB: 0xe9eb40d52ce4744322204d4a29af63c30f0260a4
+      - 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7 # Wrapped AVAX
+      - 0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB # Wrapped Ethereum
+      - 0x50b7545627a5162F82A992c33b87aDc75187B218 # Wrapped Bitcoin
+      - 0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd # Joe
+      - 0x60781C2586D68229fde47564546784ab3fACA982 # Pangolin
+      - 0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E # USDC (Native)
+      - 0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664 # USDC (Bridged - .e)
+      - 0xc7198437980c041c805A1EDcbA50c1Ce5db95118 # USDT (Bridged - .e)
+      - 0xd586E7F844cEa2F87f50152665BCbc2C279D8d70 # Dai
+      - 0x130966628846BFd36ff31a822705796e8cb8C18D # Magic Internet Money
+      - 0x0f34919404a290e71fc6A510cB4a6aCb8D764b24 # Blizz
+      - 0xd1c3f94DE7e5B45fa4eDBBA472491a9f4B166FC4 # Avalaunch
+      - 0xb27c8941a7Df8958A1778c0259f76D1F8B711C35 # Kalao
+      - 0xA32608e873F9DdEF944B24798db69d80Bbb4d1ed # Crabada
+      - 0x63a72806098Bd3D9520cC43356dD78afe5D386D9 # Aave
+      - 0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7 # Yield Yak
+      - 0xCE1bFFBD5374Dac86a2893119683F4911a2F7814 # Spell
+      - 0xb54f16fb19478766a268f172c9480f8da1a7c9c3 # Time
+      - 0x136Acd46C134E8269052c62A67042D6bDeDde3C9 # Memories (Time)
+      - 0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6 # Jewel
     exchanges:
     - name: Trader Joe
       token: 'JOE'

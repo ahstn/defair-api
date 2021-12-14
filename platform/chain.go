@@ -16,10 +16,41 @@ type Chain interface {
 	NativeBalance() (string, error)
 	Balances() ([]string, error)
 	LiquidityPools(string, domain.Network) ([]domain.LiquidityPool, error)
+	Tokens(string, domain.Network) ([]domain.Token, error)
 }
 
 // EthClient holds the necessary values for preforming calls to an EVM network API.
 type EthClient struct{}
+
+// Tokens scrapes the known list of Token addresses to fetch their name, symbol and (humanised) balance.
+// Any token with a balance greater than zero is returned to the domain.Token slice.
+func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Token, error) {
+	var tokens []domain.Token
+	client, err := ethclient.Dial(network.Endpoint)
+	if err != nil {
+		return tokens, err
+	}
+
+	for _, tokenAddress := range network.Tokens {
+		token, _ := contracts.NewToken(common.HexToAddress(tokenAddress), client)
+		balance, _ := token.BalanceOf(common.HexToAddress(address))
+		decimals, _ := token.Decimals()
+		name, _ := token.Name()
+		symbol, _ := token.Symbol()
+
+		if len(balance.Bits()) > 0 {
+			tokens = append(tokens, domain.Token{
+				Address:  tokenAddress,
+				Symbol:   symbol,
+				Name:     name,
+				Balance: bigIntToFloatWithPrecision(balance, int(decimals)),
+				Decimals: int(decimals),
+			})
+		}
+	}
+
+	return tokens, nil
+}
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
 // If the user has a balance/stake in an LP, it is returned to the slice of domain.LiquidityPool
@@ -125,9 +156,13 @@ func transformTokenPair(client *ethclient.Client, token common.Address) domain.T
 	}
 }
 
-func bigIntToFloat(amount *big.Int) float32 {
+func bigIntToFloat(amount *big.Int) float64 {
+	return bigIntToFloatWithPrecision(amount, 18)
+}
+
+func bigIntToFloatWithPrecision(amount *big.Int, decimals int) float64 {
 	fAmount, _ := new(big.Float).SetString(amount.String())
-	a, _ := new(big.Float).Quo(fAmount, big.NewFloat(math.Pow10(18))).Float32()
+	a, _ := new(big.Float).Quo(fAmount, big.NewFloat(math.Pow10(decimals))).Float64()
 	return a
 }
 
