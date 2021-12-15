@@ -4,9 +4,6 @@
 networks:
   avalanche:
     endpoint: https://api.avax.network/ext/bc/C/rpc
-    # Eventually this will support token lists also.
-    # We wanna maintain the ability to add custom tokens, but some lists are going be more actively maintained.
-    # Token names, balances, etc can still be additionally cached.
     tokens:
       lists:
       - "https://raw.githubusercontent.com/pangolindex/tokenlists/main/ab.tokenlist.json"
@@ -31,6 +28,9 @@ networks:
       token: 'TIME'
   harmony:
     endpoint: https://api.harmony.one
+    tokens:
+      lists:
+      - "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json"
     markets:
     - name: Defi Kingdoms
       token: 'JEWEL'

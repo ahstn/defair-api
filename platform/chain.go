@@ -86,7 +86,9 @@ type TokenList struct {
 }
 
 func fetchTokenList(url string) (TokenList, error) {
-	resp, err := http.Get(url)
+	web2 := &http.Client{Timeout: time.Second * 10}
+
+	resp, err := web2.Get(url)
 	if err != nil {
 		return TokenList{}, err
 	}
@@ -94,7 +96,6 @@ func fetchTokenList(url string) (TokenList, error) {
 	if err != nil {
 		return TokenList{}, err
 	}
-
 	var result TokenList
 	if err := json.Unmarshal(body, &result); err != nil {
 		return TokenList{}, err
