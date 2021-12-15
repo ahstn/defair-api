@@ -14,8 +14,9 @@ func Test_YamlIndex_Read(t *testing.T) {
 		Networks: map[string]domain.Network{
 			"avax": {
 				Endpoint: "test.rpc",
-				Tokens: map[string]string{
-					"avax": "123",
+				Tokens: domain.TokenSources{
+					Additional: []string{"0x123"},
+					Lists: []string{"http"},
 				},
 			},
 			"ftm": {
@@ -53,6 +54,5 @@ func Test_YamlIndex_Read(t *testing.T) {
 	}
 	if !reflect.DeepEqual(config, read) {
 		t.Errorf("Read() got = %+v, expected = %+v", read, config)
-
 	}
 }

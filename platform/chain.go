@@ -1,9 +1,14 @@
 package platform
 
 import (
+	"encoding/json"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/pkg/errors"
+	"io/ioutil"
 	"math"
 	"math/big"
+	"net/http"
+	"time"
 
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/internal/contracts"
@@ -31,25 +36,71 @@ func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Toke
 		return tokens, err
 	}
 
-	for _, tokenAddress := range network.Tokens {
-		token, _ := contracts.NewToken(common.HexToAddress(tokenAddress), client)
+	var tokenIndex []domain.Token
+	for _, l := range network.Tokens.Lists {
+		tokenList, err := fetchTokenList(l)
+		if err != nil {
+			return tokens, errors.Wrap(err, "error fetching token list")
+		}
+		tokenIndex = append(tokenIndex, tokenList.Tokens...)
+	}
+
+	for _, a := range network.Tokens.Additional {
+		tokenIndex = append(tokenIndex, domain.Token{Address: a})
+	}
+
+	for _, t := range tokenIndex {
+		token, _ := contracts.NewToken(common.HexToAddress(t.Address), client)
 		balance, _ := token.BalanceOf(common.HexToAddress(address))
-		decimals, _ := token.Decimals()
-		name, _ := token.Name()
-		symbol, _ := token.Symbol()
 
 		if len(balance.Bits()) > 0 {
+			decimals, _ := token.Decimals()
+			name, _ := token.Name()
+			symbol, _ := token.Symbol()
+
 			tokens = append(tokens, domain.Token{
-				Address:  tokenAddress,
+				Address:  t.Address,
 				Symbol:   symbol,
 				Name:     name,
-				Balance: bigIntToFloatWithPrecision(balance, int(decimals)),
+				Balance:  bigIntToFloatWithPrecision(balance, int(decimals)),
 				Decimals: int(decimals),
 			})
 		}
 	}
 
 	return tokens, nil
+}
+
+// TokenList represents the traditional JSON structure used by ERC-20 token lists - tokenlists.org
+type TokenList struct {
+	Name     string   `json:"name"`
+	LogoURI  string   `json:"logoURI"`
+	Keywords []string `json:"keywords"`
+	Version  struct {
+		Major int `json:"major"`
+		Minor int `json:"minor"`
+		Patch int `json:"patch"`
+	} `json:"version"`
+	Timestamp time.Time      `json:"timestamp"`
+	Tokens    []domain.Token `json:"tokens"`
+}
+
+func fetchTokenList(url string) (TokenList, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return TokenList{}, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return TokenList{}, err
+	}
+
+	var result TokenList
+	if err := json.Unmarshal(body, &result); err != nil {
+		return TokenList{}, err
+	}
+
+	return result, nil
 }
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
@@ -120,11 +171,11 @@ func fetchPoolsFromChefContact(
 
 			pair := transformTokenPair(client, pool.LpToken)
 			lp := domain.LiquidityPool{
-				Market: market,
+				Market:  market,
 				Address: pool.LpToken.String(),
 				Balance: bigIntToFloat(user.Amount),
 				Rewards: bigIntToFloat(user.RewardDebt),
-				Pair: pair,
+				Pair:    pair,
 			}
 			pools = append(pools, lp)
 		}

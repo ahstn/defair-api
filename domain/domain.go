@@ -16,11 +16,12 @@ type TokenPair struct {
 
 // Token represents an ERC20 Token's address & symbol.
 type Token struct {
-	Address  string
-	Symbol   string
-	Name     string
+	Address  string `json:"address"`
+	Name     string `json:"name"`
+	Symbol   string `json:"symbol"`
 	Balance  float64
-	Decimals int
+	Decimals int    `json:"decimals"`
+	LogoURI  string `json:"logoURI,omitempty"`
 }
 
 // LiquidityPool represents a pool existing of two ERC20 Tokens to provide liquidity for.
@@ -51,10 +52,16 @@ type Index struct {
 
 // Network represents different data for a specific EVM network, including it's RPC API Endpoint.
 type Network struct {
-	Endpoint  string     `yaml:"endpoint"`
-	Tokens    []string   `yaml:"tokens,omitempty"`
-	Exchanges []Exchange `yaml:"exchanges,omitempty"`
-	Markets   []Market   `yaml:"markets,omitempty"`
+	Endpoint  string       `yaml:"endpoint"`
+	Tokens    TokenSources `yaml:"tokens,omitempty"`
+	Exchanges []Exchange   `yaml:"exchanges,omitempty"`
+	Markets   []Market     `yaml:"markets,omitempty"`
+}
+
+// TokenSources represents sources for on-chain token addresses.
+type TokenSources struct {
+	Lists      []string `yaml:"lists"`
+	Additional []string `yaml:"additional"`
 }
 
 // Exchange represents an on-chain Exchange, it's Governance Token and related Smart Contracts.

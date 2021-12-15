@@ -78,3 +78,18 @@ func (mr *MockChainMockRecorder) NativeBalance() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NativeBalance", reflect.TypeOf((*MockChain)(nil).NativeBalance))
 }
+
+// Tokens mocks base method.
+func (m *MockChain) Tokens(arg0 string, arg1 domain.Network) ([]domain.Token, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Tokens", arg0, arg1)
+	ret0, _ := ret[0].([]domain.Token)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Tokens indicates an expected call of Tokens.
+func (mr *MockChainMockRecorder) Tokens(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tokens", reflect.TypeOf((*MockChain)(nil).Tokens), arg0, arg1)
+}
