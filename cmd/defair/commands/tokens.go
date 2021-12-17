@@ -32,7 +32,7 @@ var Tokens = cli.Command{
 		}
 
 		for _, t := range tokens {
-			fmt.Printf("token=[%s - %q], Balance=[%.2f]\n", t.Symbol, t.Name, t.Balance)
+			fmt.Printf("token=[%s - %q], Balance=[%.3f]\n", t.Symbol, t.Name, t.Balance)
 		}
 		return nil
 	},

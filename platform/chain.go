@@ -25,15 +25,34 @@ type Chain interface {
 }
 
 // EthClient holds the necessary values for preforming calls to an EVM network API.
-type EthClient struct{}
+type EthClient struct {
+	web3 bind.ContractBackend
+}
+
+// tokenList represents the traditional JSON structure used by ERC-20 token lists - tokenlists.org
+type tokenList struct {
+	Name     string   `json:"name"`
+	LogoURI  string   `json:"logoURI"`
+	Keywords []string `json:"keywords"`
+	Version  struct {
+		Major int `json:"major"`
+		Minor int `json:"minor"`
+		Patch int `json:"patch"`
+	} `json:"version"`
+	Timestamp time.Time      `json:"timestamp"`
+	Tokens    []domain.Token `json:"tokens"`
+}
 
 // Tokens scrapes the known list of Token addresses to fetch their name, symbol and (humanised) balance.
 // Any token with a balance greater than zero is returned to the domain.Token slice.
 func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Token, error) {
 	var tokens []domain.Token
-	client, err := ethclient.Dial(network.Endpoint)
-	if err != nil {
-		return tokens, err
+	if e.web3 == nil {
+		var err error
+		e.web3, err = ethclient.Dial(network.Endpoint)
+		if err != nil {
+			return tokens, err
+		}
 	}
 
 	var tokenIndex []domain.Token
@@ -50,7 +69,7 @@ func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Toke
 	}
 
 	for _, t := range tokenIndex {
-		token, _ := contracts.NewToken(common.HexToAddress(t.Address), client)
+		token, _ := contracts.NewToken(common.HexToAddress(t.Address), e.web3)
 		balance, _ := token.BalanceOf(common.HexToAddress(address))
 
 		if len(balance.Bits()) > 0 {
@@ -71,34 +90,20 @@ func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Toke
 	return tokens, nil
 }
 
-// TokenList represents the traditional JSON structure used by ERC-20 token lists - tokenlists.org
-type TokenList struct {
-	Name     string   `json:"name"`
-	LogoURI  string   `json:"logoURI"`
-	Keywords []string `json:"keywords"`
-	Version  struct {
-		Major int `json:"major"`
-		Minor int `json:"minor"`
-		Patch int `json:"patch"`
-	} `json:"version"`
-	Timestamp time.Time      `json:"timestamp"`
-	Tokens    []domain.Token `json:"tokens"`
-}
-
-func fetchTokenList(url string) (TokenList, error) {
+func fetchTokenList(url string) (tokenList, error) {
 	web2 := &http.Client{Timeout: time.Second * 10}
 
 	resp, err := web2.Get(url)
 	if err != nil {
-		return TokenList{}, err
+		return tokenList{}, err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return TokenList{}, err
+		return tokenList{}, err
 	}
-	var result TokenList
+	var result tokenList
 	if err := json.Unmarshal(body, &result); err != nil {
-		return TokenList{}, err
+		return tokenList{}, err
 	}
 
 	return result, nil
@@ -108,9 +113,12 @@ func fetchTokenList(url string) (TokenList, error) {
 // If the user has a balance/stake in an LP, it is returned to the slice of domain.LiquidityPool
 func (e EthClient) LiquidityPools(address string, network domain.Network) ([]domain.LiquidityPool, error) {
 	var pools []domain.LiquidityPool
-	client, err := ethclient.Dial(network.Endpoint)
-	if err != nil {
-		return []domain.LiquidityPool{}, err
+	if e.web3 == nil {
+		var err error
+		e.web3, err = ethclient.Dial(network.Endpoint)
+		if err != nil {
+			return pools, err
+		}
 	}
 
 	for _, m := range network.Markets {
@@ -118,7 +126,7 @@ func (e EthClient) LiquidityPools(address string, network domain.Network) ([]dom
 
 		for _, c := range m.Chef {
 			marketPools, err := fetchPoolsFromChefContact(
-				client, abi, m, common.HexToAddress(address), common.HexToAddress(c))
+				e.web3, abi, m, common.HexToAddress(address), common.HexToAddress(c))
 			if err != nil {
 				return []domain.LiquidityPool{}, err
 			}
@@ -142,7 +150,7 @@ func determineChefABI(name string) *bind.MetaData {
 // fetchPoolsFromChefContact retrieves LPs a wallet is participating in for a single Chef contract.
 // This is intended to eventually be called with pipelining/parallelism.
 func fetchPoolsFromChefContact(
-	client *ethclient.Client,
+	client bind.ContractBackend,
 	abi *bind.MetaData,
 	market domain.Market,
 	wallet, contract common.Address,
@@ -186,7 +194,7 @@ func fetchPoolsFromChefContact(
 
 // transformTokenPair fetches metadata for the underlying Tokens from LP Token Contract.
 // TODO: When Pooled Connections are working fetch Token Symbols.
-func transformTokenPair(client *ethclient.Client, token common.Address) domain.TokenPair {
+func transformTokenPair(client bind.ContractBackend, token common.Address) domain.TokenPair {
 	// If lpToken doesn't have 'Token0()' assume it's a Token, not a Token Pair (i.e. single sided pool)
 	lpToken, _ := contracts.NewTokenPair(token, client)
 	token0, err0 := lpToken.Token0(nil)
