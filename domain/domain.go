@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 // Wallet holds the user's wallet entity
 type Wallet struct {
 	// Address to the wallet (i.e. 0x123...)
@@ -8,7 +10,21 @@ type Wallet struct {
 	Networks []string
 }
 
-// TokenPair represents a pair of ERC20 Tokens.
+// TokenList represents the traditional JSON structure used by ERC-20 token lists - tokenlists.org
+type TokenList struct {
+	Name     string   `json:"name"`
+	LogoURI  string   `json:"logoURI"`
+	Keywords []string `json:"keywords"`
+	Version  struct {
+		Major int `json:"major"`
+		Minor int `json:"minor"`
+		Patch int `json:"patch"`
+	} `json:"version"`
+	Timestamp time.Time `json:"timestamp"`
+	Tokens    []Token   `json:"tokens"`
+}
+
+// TokenPair represents a pair of ERC20 Balances.
 type TokenPair struct {
 	Token0 Token
 	Token1 Token
@@ -16,15 +32,15 @@ type TokenPair struct {
 
 // Token represents an ERC20 Token's address & symbol.
 type Token struct {
-	Address  string `json:"address"`
-	Name     string `json:"name"`
-	Symbol   string `json:"symbol"`
-	Balance  float64
-	Decimals int    `json:"decimals"`
-	LogoURI  string `json:"logoURI,omitempty"`
+	Address  string  `json:"address"`
+	Name     string  `json:"name"`
+	Symbol   string  `json:"symbol"`
+	Balance  float64 `json:"balance"`
+	Decimals int     `json:"decimals"`
+	LogoURI  string  `json:"logoURI,omitempty"`
 }
 
-// LiquidityPool represents a pool existing of two ERC20 Tokens to provide liquidity for.
+// LiquidityPool represents a pool existing of two ERC20 Balances to provide liquidity for.
 type LiquidityPool struct {
 	// Address is the EVM address of the LP's smart contract.
 	Address string `json:"address,omitempty"`

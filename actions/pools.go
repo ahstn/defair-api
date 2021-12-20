@@ -35,30 +35,4 @@ func LiquidityPools(
 	return pools, nil
 }
 
-// Tokens uses platform.Chain to retrieve a list of token's a Wallet has a positive balance for.
-func Tokens(
-	address string, filter domain.DataFilter, y platform.Indexer, e platform.Chain,
-) ([]domain.Token, error) {
-	var tokens []domain.Token
 
-	c, err := y.Read()
-	if err != nil {
-		return tokens, err
-	}
-
-	// if the filter isn't "all", intersect is used to ensure the Network Names provided match valid IDs.
-	networks := []string{"avalanche", "harmony"}
-	if len(filter.Networks) >= 1 && !funk.Contains(filter.Networks, "all") {
-		networks = funk.IntersectString(networks, filter.Networks)
-	}
-
-	for _, network := range networks {
-		networkTokens, err := e.Tokens(address, c.Networks[network])
-		if err != nil {
-			return tokens, nil
-		}
-		tokens = append(tokens, networkTokens...)
-	}
-
-	return tokens, nil
-}

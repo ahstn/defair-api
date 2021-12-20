@@ -12,6 +12,9 @@ var (
 		Networks: map[string]domain.Network{
 			"avalanche": {
 				Endpoint: "test.rpc",
+				Tokens: domain.TokenSources{
+					Additional: []string{"0x123"},
+				},
 				Markets: []domain.Market{
 					{
 						Name:  "Trader Joe",

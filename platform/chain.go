@@ -1,27 +1,19 @@
 package platform
 
 import (
-	"encoding/json"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/pkg/errors"
-	"io/ioutil"
-	"math"
-	"math/big"
-	"net/http"
-	"time"
-
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/internal/contracts"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"math"
+	"math/big"
 )
 
 // Chain defines the expected behaviour for a client connecting to any Blockchain
 type Chain interface {
-	NativeBalance() (string, error)
-	Balances() ([]string, error)
+	Balances(string, string, []domain.Token) ([]domain.Token, error)
 	LiquidityPools(string, domain.Network) ([]domain.LiquidityPool, error)
-	Tokens(string, domain.Network) ([]domain.Token, error)
 }
 
 // EthClient holds the necessary values for preforming calls to an EVM network API.
@@ -29,48 +21,28 @@ type EthClient struct {
 	web3 bind.ContractBackend
 }
 
-// tokenList represents the traditional JSON structure used by ERC-20 token lists - tokenlists.org
-type tokenList struct {
-	Name     string   `json:"name"`
-	LogoURI  string   `json:"logoURI"`
-	Keywords []string `json:"keywords"`
-	Version  struct {
-		Major int `json:"major"`
-		Minor int `json:"minor"`
-		Patch int `json:"patch"`
-	} `json:"version"`
-	Timestamp time.Time      `json:"timestamp"`
-	Tokens    []domain.Token `json:"tokens"`
-}
-
-// Tokens scrapes the known list of Token addresses to fetch their name, symbol and (humanised) balance.
+// Balances scrapes the known list of Token addresses to fetch their name, symbol and (humanised) balance.
 // Any token with a balance greater than zero is returned to the domain.Token slice.
-func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Token, error) {
+func (e EthClient) Balances(rpc, address string, index []domain.Token) ([]domain.Token, error) {
 	var tokens []domain.Token
 	if e.web3 == nil {
 		var err error
-		e.web3, err = ethclient.Dial(network.Endpoint)
+		e.web3, err = ethclient.Dial(rpc)
 		if err != nil {
 			return tokens, err
 		}
 	}
 
-	var tokenIndex []domain.Token
-	for _, l := range network.Tokens.Lists {
-		tokenList, err := fetchTokenList(l)
+	for _, t := range index {
+		token, err := contracts.NewToken(common.HexToAddress(t.Address), e.web3)
 		if err != nil {
-			return tokens, errors.Wrap(err, "error fetching token list")
+			return tokens, err
 		}
-		tokenIndex = append(tokenIndex, tokenList.Tokens...)
-	}
-
-	for _, a := range network.Tokens.Additional {
-		tokenIndex = append(tokenIndex, domain.Token{Address: a})
-	}
-
-	for _, t := range tokenIndex {
-		token, _ := contracts.NewToken(common.HexToAddress(t.Address), e.web3)
-		balance, _ := token.BalanceOf(common.HexToAddress(address))
+		
+		balance, err := token.BalanceOf(common.HexToAddress(address))
+		if err != nil {
+			return tokens, err
+		}
 
 		if len(balance.Bits()) > 0 {
 			decimals, _ := token.Decimals()
@@ -88,25 +60,6 @@ func (e EthClient) Tokens(address string, network domain.Network) ([]domain.Toke
 	}
 
 	return tokens, nil
-}
-
-func fetchTokenList(url string) (tokenList, error) {
-	web2 := &http.Client{Timeout: time.Second * 10}
-
-	resp, err := web2.Get(url)
-	if err != nil {
-		return tokenList{}, err
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return tokenList{}, err
-	}
-	var result tokenList
-	if err := json.Unmarshal(body, &result); err != nil {
-		return tokenList{}, err
-	}
-
-	return result, nil
 }
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
@@ -192,7 +145,7 @@ func fetchPoolsFromChefContact(
 	return pools, nil
 }
 
-// transformTokenPair fetches metadata for the underlying Tokens from LP Token Contract.
+// transformTokenPair fetches metadata for the underlying Balances from LP Token Contract.
 // TODO: When Pooled Connections are working fetch Token Symbols.
 func transformTokenPair(client bind.ContractBackend, token common.Address) domain.TokenPair {
 	// If lpToken doesn't have 'Token0()' assume it's a Token, not a Token Pair (i.e. single sided pool)
@@ -224,12 +177,4 @@ func bigIntToFloatWithPrecision(amount *big.Int, decimals int) float64 {
 	fAmount, _ := new(big.Float).SetString(amount.String())
 	a, _ := new(big.Float).Quo(fAmount, big.NewFloat(math.Pow10(decimals))).Float64()
 	return a
-}
-
-func (e EthClient) NativeBalance() (string, error) {
-	panic("TODO: implement me")
-}
-
-func (e EthClient) Balances() ([]string, error) {
-	panic("TODO: implement me")
 }
