@@ -2,7 +2,12 @@
 
 <p align="center" markdown="1">
   <img src=".github/logo-banner.png" alt="logo"/>
-  <a href="https://github.com/ahstn/defair-api/actions"><img src="https://github.com/ahstn/defair-api/actions/workflows/main.yml/badge.svg?branch=main" alt="Build Status" /></a>
+  <a href="https://github.com/ahstn/defair-api/actions">
+    <img src="https://github.com/ahstn/defair-api/actions/workflows/main.yml/badge.svg?branch=main" alt="Build Status" />
+  </a>
+  <a href="https://codecov.io/gh/ahstn/defair-api">
+    <img src="https://codecov.io/gh/ahstn/defair-api/branch/main/graph/badge.svg?token=X6OFD7PLEL" />
+  </a>
 </p>
 
 > Aiming to make navigating & tracking decentralised finance fair for all.

@@ -1,33 +1,77 @@
 package platform
 
 import (
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"math"
-	"math/big"
-
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/internal/contracts"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"math"
+	"math/big"
 )
 
 // Chain defines the expected behaviour for a client connecting to any Blockchain
 type Chain interface {
-	NativeBalance() (string, error)
-	Balances() ([]string, error)
+	Balances(string, string, []domain.Token) ([]domain.Token, error)
 	LiquidityPools(string, domain.Network) ([]domain.LiquidityPool, error)
 }
 
 // EthClient holds the necessary values for preforming calls to an EVM network API.
-type EthClient struct{}
+type EthClient struct {
+	web3 bind.ContractBackend
+}
+
+// Balances scrapes the known list of Token addresses to fetch their name, symbol and (humanised) balance.
+// Any token with a balance greater than zero is returned to the domain.Token slice.
+func (e EthClient) Balances(rpc, address string, index []domain.Token) ([]domain.Token, error) {
+	var tokens []domain.Token
+	if e.web3 == nil {
+		var err error
+		e.web3, err = ethclient.Dial(rpc)
+		if err != nil {
+			return tokens, err
+		}
+	}
+
+	for _, t := range index {
+		token, err := contracts.NewToken(common.HexToAddress(t.Address), e.web3)
+		if err != nil {
+			return tokens, err
+		}
+		
+		balance, err := token.BalanceOf(common.HexToAddress(address))
+		if err != nil {
+			return tokens, err
+		}
+
+		if len(balance.Bits()) > 0 {
+			decimals, _ := token.Decimals()
+			name, _ := token.Name()
+			symbol, _ := token.Symbol()
+
+			tokens = append(tokens, domain.Token{
+				Address:  t.Address,
+				Symbol:   symbol,
+				Name:     name,
+				Balance:  bigIntToFloatWithPrecision(balance, int(decimals)),
+				Decimals: int(decimals),
+			})
+		}
+	}
+
+	return tokens, nil
+}
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
 // If the user has a balance/stake in an LP, it is returned to the slice of domain.LiquidityPool
 func (e EthClient) LiquidityPools(address string, network domain.Network) ([]domain.LiquidityPool, error) {
 	var pools []domain.LiquidityPool
-	client, err := ethclient.Dial(network.Endpoint)
-	if err != nil {
-		return []domain.LiquidityPool{}, err
+	if e.web3 == nil {
+		var err error
+		e.web3, err = ethclient.Dial(network.Endpoint)
+		if err != nil {
+			return pools, err
+		}
 	}
 
 	for _, m := range network.Markets {
@@ -35,7 +79,7 @@ func (e EthClient) LiquidityPools(address string, network domain.Network) ([]dom
 
 		for _, c := range m.Chef {
 			marketPools, err := fetchPoolsFromChefContact(
-				client, abi, m, common.HexToAddress(address), common.HexToAddress(c))
+				e.web3, abi, m, common.HexToAddress(address), common.HexToAddress(c))
 			if err != nil {
 				return []domain.LiquidityPool{}, err
 			}
@@ -59,7 +103,7 @@ func determineChefABI(name string) *bind.MetaData {
 // fetchPoolsFromChefContact retrieves LPs a wallet is participating in for a single Chef contract.
 // This is intended to eventually be called with pipelining/parallelism.
 func fetchPoolsFromChefContact(
-	client *ethclient.Client,
+	client bind.ContractBackend,
 	abi *bind.MetaData,
 	market domain.Market,
 	wallet, contract common.Address,
@@ -89,11 +133,11 @@ func fetchPoolsFromChefContact(
 
 			pair := transformTokenPair(client, pool.LpToken)
 			lp := domain.LiquidityPool{
-				Market: market,
+				Market:  market,
 				Address: pool.LpToken.String(),
 				Balance: bigIntToFloat(user.Amount),
 				Rewards: bigIntToFloat(user.RewardDebt),
-				Pair: pair,
+				Pair:    pair,
 			}
 			pools = append(pools, lp)
 		}
@@ -101,9 +145,9 @@ func fetchPoolsFromChefContact(
 	return pools, nil
 }
 
-// transformTokenPair fetches metadata for the underlying Tokens from LP Token Contract.
+// transformTokenPair fetches metadata for the underlying Balances from LP Token Contract.
 // TODO: When Pooled Connections are working fetch Token Symbols.
-func transformTokenPair(client *ethclient.Client, token common.Address) domain.TokenPair {
+func transformTokenPair(client bind.ContractBackend, token common.Address) domain.TokenPair {
 	// If lpToken doesn't have 'Token0()' assume it's a Token, not a Token Pair (i.e. single sided pool)
 	lpToken, _ := contracts.NewTokenPair(token, client)
 	token0, err0 := lpToken.Token0(nil)
@@ -125,16 +169,12 @@ func transformTokenPair(client *ethclient.Client, token common.Address) domain.T
 	}
 }
 
-func bigIntToFloat(amount *big.Int) float32 {
+func bigIntToFloat(amount *big.Int) float64 {
+	return bigIntToFloatWithPrecision(amount, 18)
+}
+
+func bigIntToFloatWithPrecision(amount *big.Int, decimals int) float64 {
 	fAmount, _ := new(big.Float).SetString(amount.String())
-	a, _ := new(big.Float).Quo(fAmount, big.NewFloat(math.Pow10(18))).Float32()
+	a, _ := new(big.Float).Quo(fAmount, big.NewFloat(math.Pow10(decimals))).Float64()
 	return a
-}
-
-func (e EthClient) NativeBalance() (string, error) {
-	panic("TODO: implement me")
-}
-
-func (e EthClient) Balances() ([]string, error) {
-	panic("TODO: implement me")
 }

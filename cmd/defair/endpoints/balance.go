@@ -1,8 +1,12 @@
 package endpoints
 
 import (
-	"fmt"
+	"github.com/ahstn/defair/actions"
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +14,14 @@ import (
 func Balance(c *gin.Context) {
 	address := c.Param("address")
 	network := c.DefaultQuery("network", "all")
-	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Checking balance for %q on network %q", address, network),
-	})
+	y := platform.YamlIndex{Path: "./config.yaml"}
+	e := platform.EthClient{}
+	f := domain.DataFilter{Networks: strings.Split(network, ",")}
+
+	tokens, err := actions.Tokens(address, f, y, e)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, tokens)
 }

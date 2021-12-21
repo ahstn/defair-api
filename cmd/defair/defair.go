@@ -14,6 +14,7 @@ func main() {
 		Commands: []*cli.Command{
 			&commands.Balance,
 			&commands.LiquidityPools,
+			&commands.Tokens,
 			&commands.Server,
 		},
 	}

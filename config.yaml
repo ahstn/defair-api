@@ -5,13 +5,14 @@ networks:
   avalanche:
     endpoint: https://api.avax.network/ext/bc/C/rpc
     tokens:
-      wAVAX: 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7
-      JOE: 0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd
-      MIM: 0x130966628846BFd36ff31a822705796e8cb8C18D
-      TIME: 0xb54f16fb19478766a268f172c9480f8da1a7c9c3
-      MEMO: 0x136Acd46C134E8269052c62A67042D6bDeDde3C9
-      SB: 0x7d1232B90D3F809A54eeaeeBC639C62dF8a8942f
-      sSB: 0xe9eb40d52ce4744322204d4a29af63c30f0260a4
+      lists:
+      - "https://raw.githubusercontent.com/pangolindex/tokenlists/main/ab.tokenlist.json"
+      - "https://raw.githubusercontent.com/pangolindex/tokenlists/main/defi.tokenlist.json"
+      additional:
+      - 0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E # USDC (Native)
+      - 0x130966628846BFd36ff31a822705796e8cb8C18D # Magic Internet Money
+      - 0x0f34919404a290e71fc6A510cB4a6aCb8D764b24 # Blizz
+      - 0x136Acd46C134E8269052c62A67042D6bDeDde3C9 # Memories (Time)
     exchanges:
     - name: Trader Joe
       token: 'JOE'
@@ -27,6 +28,9 @@ networks:
       token: 'TIME'
   harmony:
     endpoint: https://api.harmony.one
+    tokens:
+      lists:
+      - "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json"
     markets:
     - name: Defi Kingdoms
       token: 'JEWEL'
