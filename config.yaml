@@ -36,5 +36,15 @@ networks:
       token: 'JEWEL'
       chef:
       - 0xdb30643c71ac9e2122ca0341ed77d09d5f99f924
+  aurora:
+    endpoint: https://mainnet.aurora.dev
+    tokens:
+      lists:
+      - "https://aurora.dev/tokens.json"
+    markets:
+    - name: Near Pad
+      token: 'PAD'
+      chef:
+      - 0x2aeF68F92cfBAFA4b542F60044c7596e65612D20
   fantom:
     endpoint: https://rpc.ftm.tools

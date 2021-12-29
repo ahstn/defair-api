@@ -19,7 +19,7 @@ func LiquidityPools(
 	}
 
 	// if the filter isn't "all", intersect is used to ensure the Network Names provided match valid IDs.
-	networks := []string{"avalanche", "harmony"}
+	networks := []string{"avalanche", "harmony", "aurora"}
 	if len(filter.Networks) >= 1 && !funk.Contains(filter.Networks, "all") {
 		networks = funk.IntersectString(networks, filter.Networks)
 	}

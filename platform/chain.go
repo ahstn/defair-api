@@ -38,7 +38,7 @@ func (e EthClient) Balances(rpc, address string, index []domain.Token) ([]domain
 		if err != nil {
 			return tokens, err
 		}
-		
+
 		balance, err := token.BalanceOf(common.HexToAddress(address))
 		if err != nil {
 			return tokens, err
@@ -95,8 +95,10 @@ func determineChefABI(name string) *bind.MetaData {
 	switch name {
 	case "Defi Kingdoms":
 		return contracts.DFKChefMetadata
-	default:
+	case "Trader Joe":
 		return contracts.JoeChefMetadata
+	default:
+		return contracts.SushiChefMetaData
 	}
 }
 
