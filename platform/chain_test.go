@@ -23,6 +23,7 @@ var (
 		Decimals: 18,
 		Name: "Test Token",
 		Symbol: "ABC",
+		TotalSupply: 1000,
 	}
 )
 
@@ -60,6 +61,20 @@ func TestBalances(t *testing.T) {
 
 	callSignature, _ = parsedABI.Pack("decimals")
 	returnValue = ethmath.U256Bytes(big.NewInt(int64(abcToken.Decimals)))
+	c.EXPECT().
+		CallContract(gomock.Any(), ethereum.CallMsg{
+			From: common.HexToAddress("0x0"),
+			To: &tokenAddress,
+			Data: callSignature,
+		}, gomock.Any()).
+		Return(returnValue, nil).AnyTimes()
+
+	callSignature, _ = parsedABI.Pack("totalSupply")
+	returnValue = ethmath.U256Bytes(
+		big.NewInt(0).Mul(
+			big.NewInt(int64(abcToken.TotalSupply)), big.NewInt(int64(math.Pow10(abcToken.Decimals))),
+		),
+	)
 	c.EXPECT().
 		CallContract(gomock.Any(), ethereum.CallMsg{
 			From: common.HexToAddress("0x0"),

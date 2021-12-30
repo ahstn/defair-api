@@ -19,10 +19,11 @@ networks:
       controller: 0xdc13687554205E5b89Ac783db14bb5bba4A1eDaC
     markets:
     - name: Trader Joe
-      token: 'JOE'
+      token: 0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd
       chef:
       - 0xd6a4f121ca35509af06a0be99093d08462f53052
       - 0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00
+      staker: 0x57319d41F71E81F3c65F2a47CA4e001EbAFd4F33
     rebasers:
     - name: Wonderland
       token: 'TIME'
@@ -33,9 +34,10 @@ networks:
       - "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json"
     markets:
     - name: Defi Kingdoms
-      token: 'JEWEL'
+      token: 0x72Cb10C6bfA5624dD07Ef608027E366bd690048F
       chef:
       - 0xdb30643c71ac9e2122ca0341ed77d09d5f99f924
+      staker: 0xa9ce83507d872c5e1273e745abcfda849daa654f
   aurora:
     endpoint: https://mainnet.aurora.dev
     tokens:
@@ -43,8 +45,9 @@ networks:
       - "https://aurora.dev/tokens.json"
     markets:
     - name: Near Pad
-      token: 'PAD'
+      token: 0x885f8CF6E45bdd3fdcDc644efdcd0AC93880c781
       chef:
       - 0x2aeF68F92cfBAFA4b542F60044c7596e65612D20
+      staker: 0x5a9B5fE4fAb31280A6397e3D87F3565BbfeEb995
   fantom:
     endpoint: https://rpc.ftm.tools

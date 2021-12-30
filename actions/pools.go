@@ -3,7 +3,6 @@ package actions
 import (
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/platform"
-	"github.com/thoas/go-funk"
 )
 
 // LiquidityPools uses platform.Chain to retrieve the Pools a Wallet is
@@ -18,11 +17,7 @@ func LiquidityPools(
 		return pools, err
 	}
 
-	// if the filter isn't "all", intersect is used to ensure the Network Names provided match valid IDs.
-	networks := []string{"avalanche", "harmony", "aurora"}
-	if len(filter.Networks) >= 1 && !funk.Contains(filter.Networks, "all") {
-		networks = funk.IntersectString(networks, filter.Networks)
-	}
+	networks := networkFilter(filter)
 
 	for _, network := range networks {
 		networkPools, err := e.LiquidityPools(address, c.Networks[network])

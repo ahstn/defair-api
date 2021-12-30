@@ -5,7 +5,6 @@ import (
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/platform"
 	"github.com/pkg/errors"
-	"github.com/thoas/go-funk"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -22,11 +21,7 @@ func Tokens(
 		return tokens, err
 	}
 
-	// if the filter isn't "all", intersect is used to ensure the Network Names provided match valid IDs.
-	networks := []string{"avalanche", "harmony"}
-	if len(filter.Networks) >= 1 && !funk.Contains(filter.Networks, "all") {
-		networks = funk.IntersectString(networks, filter.Networks)
-	}
+	networks := networkFilter(filter)
 
 	for _, network := range networks {
 		var tokenIndex []domain.Token
