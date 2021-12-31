@@ -14,6 +14,7 @@ import (
 type Chain interface {
 	Balances(string, string, []domain.Token) ([]domain.Token, error)
 	LiquidityPools(string, domain.Network) ([]domain.LiquidityPool, error)
+	TokenInfo(string, string, string) (domain.Token, error)
 }
 
 // EthClient holds the necessary values for preforming calls to an EVM network API.
@@ -34,32 +35,55 @@ func (e EthClient) Balances(rpc, address string, index []domain.Token) ([]domain
 	}
 
 	for _, t := range index {
-		token, err := contracts.NewToken(common.HexToAddress(t.Address), e.web3)
-		if err != nil {
-			return tokens, err
-		}
-		
-		balance, err := token.BalanceOf(common.HexToAddress(address))
+		token, err := e.TokenInfo(rpc, address, t.Address)
 		if err != nil {
 			return tokens, err
 		}
 
-		if len(balance.Bits()) > 0 {
-			decimals, _ := token.Decimals()
-			name, _ := token.Name()
-			symbol, _ := token.Symbol()
-
-			tokens = append(tokens, domain.Token{
-				Address:  t.Address,
-				Symbol:   symbol,
-				Name:     name,
-				Balance:  bigIntToFloatWithPrecision(balance, int(decimals)),
-				Decimals: int(decimals),
-			})
+		if token.Balance > 0 {
+			tokens = append(tokens, token)
 		}
 	}
 
 	return tokens, nil
+}
+
+func (e EthClient) TokenInfo(rpc, walletAddress, tokenAddress string) (domain.Token, error) {
+	if e.web3 == nil {
+		var err error
+		e.web3, err = ethclient.Dial(rpc)
+		if err != nil {
+			return domain.Token{}, err
+		}
+	}
+
+	t, err := contracts.NewToken(common.HexToAddress(tokenAddress), e.web3)
+	if err != nil {
+		return domain.Token{}, err
+	}
+
+	balance, err := t.BalanceOf(common.HexToAddress(walletAddress))
+	if err != nil {
+		return domain.Token{}, err
+	}
+
+	if len(balance.Bits()) > 0 {
+		decimals, _ := t.Decimals()
+		name, _ := t.Name()
+		symbol, _ := t.Symbol()
+		supply, _ := t.TotalSupply()
+
+		return domain.Token{
+			Address:  tokenAddress,
+			Symbol:   symbol,
+			Name:     name,
+			Balance:  bigIntToFloatWithPrecision(balance, int(decimals)),
+			Decimals: int(decimals),
+			TotalSupply: bigIntToFloatWithPrecision(supply, int(decimals)),
+		}, nil
+	}
+
+	return domain.Token{}, nil
 }
 
 // LiquidityPools scrapes the domain.Market MasterChef contracts to fetch LP & User info
@@ -95,8 +119,10 @@ func determineChefABI(name string) *bind.MetaData {
 	switch name {
 	case "Defi Kingdoms":
 		return contracts.DFKChefMetadata
-	default:
+	case "Trader Joe":
 		return contracts.JoeChefMetadata
+	default:
+		return contracts.SushiChefMetaData
 	}
 }
 

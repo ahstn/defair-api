@@ -72,6 +72,9 @@ func Test_LiquidityProvider_AllNetworks(t *testing.T) {
 	e.EXPECT().
 		LiquidityPools(gomock.Any(), config.Networks["harmony"]).
 		Times(1)
+	e.EXPECT().
+		LiquidityPools(gomock.Any(), config.Networks["aurora"]).
+		Times(1)
 
 	_, err := LiquidityPools("0x123", f, y, e)
 	if err != nil {

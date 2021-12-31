@@ -15,6 +15,7 @@ func main() {
 			&commands.Balance,
 			&commands.LiquidityPools,
 			&commands.Tokens,
+			&commands.Staking,
 			&commands.Server,
 		},
 	}

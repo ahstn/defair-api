@@ -5,15 +5,15 @@ import (
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/platform"
 	"log"
+	"strings"
 
 	"github.com/ahstn/defair/actions"
 	"github.com/urfave/cli/v2"
 )
 
-// LiquidityPools defines the necessary flags and action for retrieving the
-// Pools a Wallet is providing Liquidity for.
-var LiquidityPools = cli.Command{
-	Name: "liquidity-pools",
+// Staking defines the necessary flags and action for retrieving a wallet's staking tokens.
+var Staking = cli.Command{
+	Name: "staking",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "network",
@@ -24,15 +24,15 @@ var LiquidityPools = cli.Command{
 	Action: func(c *cli.Context) error {
 		y := platform.YamlIndex{Path: "./config.yaml"}
 		e := platform.EthClient{}
-		f := domain.DataFilter{Networks: []string{"all"}}
-		pools, err := actions.LiquidityPools(c.Args().Get(0), f, y, e)
+		f := domain.DataFilter{Networks: strings.Split(c.String("network"), ",")}
+
+		tokens, err := actions.Staking(c.Args().Get(0), f, y, e)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		for _, p := range pools {
-			fmt.Printf("Market=[%s], LP=[%s], Balance=[%v], Rewards=[%v]\n",
-				p.Market.Name, p.Address, p.Balance, p.Rewards)
+		for _, t := range tokens {
+			fmt.Printf("token=[%s - %q], Balance=[%.3f], Ratio=[%.3f]\n", t.Symbol, t.Name, t.Balance, t.Ratio)
 		}
 		return nil
 	},

@@ -63,3 +63,18 @@ func (mr *MockChainMockRecorder) LiquidityPools(arg0, arg1 interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LiquidityPools", reflect.TypeOf((*MockChain)(nil).LiquidityPools), arg0, arg1)
 }
+
+// TokenInfo mocks base method.
+func (m *MockChain) TokenInfo(arg0, arg1, arg2 string) (domain.Token, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TokenInfo", arg0, arg1, arg2)
+	ret0, _ := ret[0].(domain.Token)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// TokenInfo indicates an expected call of TokenInfo.
+func (mr *MockChainMockRecorder) TokenInfo(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TokenInfo", reflect.TypeOf((*MockChain)(nil).TokenInfo), arg0, arg1, arg2)
+}

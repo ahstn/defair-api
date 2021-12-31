@@ -32,12 +32,16 @@ type TokenPair struct {
 
 // Token represents an ERC20 Token's address & symbol.
 type Token struct {
-	Address  string  `json:"address"`
-	Name     string  `json:"name"`
-	Symbol   string  `json:"symbol"`
-	Balance  float64 `json:"balance"`
-	Decimals int     `json:"decimals"`
-	LogoURI  string  `json:"logoURI,omitempty"`
+	Address     string  `json:"address"`
+	Name        string  `json:"name"`
+	Symbol      string  `json:"symbol"`
+	Balance     float64 `json:"balance"`
+	Decimals    int     `json:"decimals"`
+	LogoURI     string  `json:"logoURI,omitempty"`
+	TotalSupply float64
+
+	// Ratio is only intended for "Staking" tokens (i.e. xJoe, xJewel, xSushi), for the ratio to Gov Tokens.
+	Ratio       float64
 }
 
 // LiquidityPool represents a pool existing of two ERC20 Balances to provide liquidity for.
@@ -88,7 +92,8 @@ type Exchange struct {
 
 // Market represents an on-chain liquidity provider, it's Governance Token and related Smart Contracts.
 type Market struct {
-	Name  string   `yaml:"name" json:"name"`
-	Token string   `yaml:"token"`
-	Chef  []string `yaml:"chef"`
+	Name   string   `yaml:"name" json:"name"`
+	Token  string   `yaml:"token"`
+	Chef   []string `yaml:"chef"`
+	Staker string   `yaml:"staker,omitempty"`
 }
