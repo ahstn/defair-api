@@ -22,6 +22,7 @@ var Server = cli.Command{
 		r := gin.Default()
 		r.GET("/wallet/:address", endpoints.Balance)
 		r.GET("/pools/:address", endpoints.LiquidityPools)
+		r.GET("/staking/:address", endpoints.Staking)
 		return r.Run(fmt.Sprintf(":%s", c.String("port")))
 	},
 }

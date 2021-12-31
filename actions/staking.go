@@ -5,7 +5,8 @@ import (
 	"github.com/ahstn/defair/platform"
 )
 
-// Staking uses platform.Chain to retrieve a list of token's a Wallet has a positive balance for.
+// Staking uses platform.Chain to retrieve a list of "staking" token's a Wallet has a positive balance for and
+//   calculates the protocol's ratio of Governance Token to Staking Token.
 func Staking(
 	address string, filter domain.DataFilter, y platform.Indexer, e platform.Chain,
 ) ([]domain.Token, error) {
