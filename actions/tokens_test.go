@@ -2,27 +2,26 @@ package actions
 
 import (
 	"encoding/json"
-	"github.com/ahstn/defair/domain"
-	"github.com/ahstn/defair/platform"
-	"github.com/golang/mock/gomock"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
+	"github.com/golang/mock/gomock"
 )
 
-var (
-	fakeTokenList = domain.TokenList{
-		Name:     "Test",
-		Tokens:    []domain.Token{
-			{
-				Address: "0x456",
-				Name: "Test Token",
-				Symbol: "TEST",
-			},
+var fakeTokenList = domain.TokenList{
+	Name: "Test",
+	Tokens: []domain.Token{
+		{
+			Address: "0x456",
+			Name:    "Test Token",
+			Symbol:  "TEST",
 		},
-	}
-)
+	},
+}
 
 func Test_Tokens_SingleNetwork(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -44,7 +43,6 @@ func Test_Tokens_SingleNetwork(t *testing.T) {
 	tokens := fakeTokenList.Tokens
 	tokens = append(tokens, domain.Token{Address: config.Networks["avalanche"].Tokens.Additional[0]})
 
-
 	y.EXPECT().Read().Return(config, nil).AnyTimes()
 	e.EXPECT().
 		Balances(gomock.Any(), gomock.Any(), tokens).
@@ -61,7 +59,6 @@ func TestFetchTokenList(t *testing.T) {
 	defer ts.Close()
 
 	response, err := fetchTokenList(ts.URL)
-
 	if err != nil {
 		t.Fatal(err)
 	}

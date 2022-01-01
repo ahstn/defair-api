@@ -2,10 +2,11 @@ package commands
 
 import (
 	"fmt"
-	"github.com/ahstn/defair/domain"
-	"github.com/ahstn/defair/platform"
 	"log"
 	"strings"
+
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
 
 	"github.com/ahstn/defair/actions"
 	"github.com/urfave/cli/v2"

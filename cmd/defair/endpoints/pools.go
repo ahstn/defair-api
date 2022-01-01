@@ -1,12 +1,13 @@
 package endpoints
 
 import (
-	"github.com/ahstn/defair/actions"
-	"github.com/ahstn/defair/domain"
-	"github.com/ahstn/defair/platform"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/ahstn/defair/actions"
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
 
 	"github.com/gin-gonic/gin"
 )
