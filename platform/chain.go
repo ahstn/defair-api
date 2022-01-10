@@ -1,13 +1,14 @@
 package platform
 
 import (
+	"math"
+	"math/big"
+
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/internal/contracts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"math"
-	"math/big"
 )
 
 // Chain defines the expected behaviour for a client connecting to any Blockchain
@@ -74,11 +75,11 @@ func (e EthClient) TokenInfo(rpc, walletAddress, tokenAddress string) (domain.To
 		supply, _ := t.TotalSupply()
 
 		return domain.Token{
-			Address:  tokenAddress,
-			Symbol:   symbol,
-			Name:     name,
-			Balance:  bigIntToFloatWithPrecision(balance, int(decimals)),
-			Decimals: int(decimals),
+			Address:     tokenAddress,
+			Symbol:      symbol,
+			Name:        name,
+			Balance:     bigIntToFloatWithPrecision(balance, int(decimals)),
+			Decimals:    int(decimals),
 			TotalSupply: bigIntToFloatWithPrecision(supply, int(decimals)),
 		}, nil
 	}

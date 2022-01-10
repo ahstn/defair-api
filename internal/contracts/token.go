@@ -80,7 +80,6 @@ func DeployToken(auth *bind.TransactOpts, backend bind.ContractBackend) (common.
 func (_Token *TokenCaller) Allowance(opts *bind.CallOpts, _owner common.Address, _spender common.Address) (*big.Int, error) {
 	var out []interface{}
 	err := _Token.contract.Call(opts, &out, "allowance", _owner, _spender)
-
 	if err != nil {
 		return *new(*big.Int), err
 	}
@@ -94,7 +93,6 @@ func (_Token *TokenCaller) Allowance(opts *bind.CallOpts, _owner common.Address,
 func (_Token *TokenCaller) BalanceOf(_owner common.Address) (*big.Int, error) {
 	var out []interface{}
 	err := _Token.contract.Call(nil, &out, "balanceOf", _owner)
-
 	if err != nil {
 		return *new(*big.Int), err
 	}
@@ -108,7 +106,6 @@ func (_Token *TokenCaller) BalanceOf(_owner common.Address) (*big.Int, error) {
 func (_Token *TokenCaller) Decimals() (uint8, error) {
 	var out []interface{}
 	err := _Token.contract.Call(nil, &out, "decimals")
-
 	if err != nil {
 		return *new(uint8), err
 	}
@@ -122,7 +119,6 @@ func (_Token *TokenCaller) Decimals() (uint8, error) {
 func (_Token *TokenCaller) Name() (string, error) {
 	var out []interface{}
 	err := _Token.contract.Call(nil, &out, "name")
-
 	if err != nil {
 		return *new(string), err
 	}
@@ -149,7 +145,6 @@ func (_Token *TokenCaller) Symbol() (string, error) {
 func (_Token *TokenCaller) TotalSupply() (*big.Int, error) {
 	var out []interface{}
 	err := _Token.contract.Call(nil, &out, "totalSupply")
-
 	if err != nil {
 		return *new(*big.Int), err
 	}

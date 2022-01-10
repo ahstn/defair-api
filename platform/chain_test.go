@@ -2,6 +2,12 @@ package platform
 
 import (
 	"fmt"
+	"math"
+	"math/big"
+	"reflect"
+	"strings"
+	"testing"
+
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/internal/contracts"
 	"github.com/ethereum/go-ethereum"
@@ -9,23 +15,16 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	ethmath "github.com/ethereum/go-ethereum/common/math"
 	"github.com/golang/mock/gomock"
-	"math"
-	"math/big"
-	"reflect"
-	"strings"
-	"testing"
 )
 
-var (
-	abcToken = domain.Token{
-		Address: "0x123",
-		Balance: 2,
-		Decimals: 18,
-		Name: "Test Token",
-		Symbol: "ABC",
-		TotalSupply: 1000,
-	}
-)
+var abcToken = domain.Token{
+	Address:     "0x123",
+	Balance:     2,
+	Decimals:    18,
+	Name:        "Test Token",
+	Symbol:      "ABC",
+	TotalSupply: 1000,
+}
 
 // TestBalances mocks ethclient to return pre-determined values for a Token contract and it's methods:
 //   "balanceOf", "decimals", "symbol" & "name".
@@ -54,7 +53,7 @@ func TestBalances(t *testing.T) {
 	c.EXPECT().
 		CallContract(gomock.Any(), ethereum.CallMsg{
 			From: common.HexToAddress("0x0"),
-			To: &tokenAddress,
+			To:   &tokenAddress,
 			Data: callSignature,
 		}, gomock.Any()).
 		Return(returnValue, nil).AnyTimes()
@@ -64,7 +63,7 @@ func TestBalances(t *testing.T) {
 	c.EXPECT().
 		CallContract(gomock.Any(), ethereum.CallMsg{
 			From: common.HexToAddress("0x0"),
-			To: &tokenAddress,
+			To:   &tokenAddress,
 			Data: callSignature,
 		}, gomock.Any()).
 		Return(returnValue, nil).AnyTimes()
@@ -78,7 +77,7 @@ func TestBalances(t *testing.T) {
 	c.EXPECT().
 		CallContract(gomock.Any(), ethereum.CallMsg{
 			From: common.HexToAddress("0x0"),
-			To: &tokenAddress,
+			To:   &tokenAddress,
 			Data: callSignature,
 		}, gomock.Any()).
 		Return(returnValue, nil).AnyTimes()

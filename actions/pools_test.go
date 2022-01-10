@@ -1,41 +1,40 @@
 package actions
 
 import (
+	"testing"
+
 	"github.com/ahstn/defair/domain"
 	"github.com/ahstn/defair/platform"
 	"github.com/golang/mock/gomock"
-	"testing"
 )
 
-var (
-	config = domain.Index{
-		Networks: map[string]domain.Network{
-			"avalanche": {
-				Endpoint: "test.rpc",
-				Tokens: domain.TokenSources{
-					Additional: []string{"0x123"},
-				},
-				Markets: []domain.Market{
-					{
-						Name:  "Trader Joe",
-						Token: "Token",
-						Chef: []string{"123"},
-					},
-				},
+var config = domain.Index{
+	Networks: map[string]domain.Network{
+		"avalanche": {
+			Endpoint: "test.rpc",
+			Tokens: domain.TokenSources{
+				Additional: []string{"0x123"},
 			},
-			"fantom": {
-				Endpoint: "test.rpc",
-				Markets: []domain.Market{
-					{
-						Name:  "SpiritSwap",
-						Token: "Token",
-						Chef: []string{"123"},
-					},
+			Markets: []domain.Market{
+				{
+					Name:  "Trader Joe",
+					Token: "Token",
+					Chef:  []string{"123"},
 				},
 			},
 		},
-	}
-)
+		"fantom": {
+			Endpoint: "test.rpc",
+			Markets: []domain.Market{
+				{
+					Name:  "SpiritSwap",
+					Token: "Token",
+					Chef:  []string{"123"},
+				},
+			},
+		},
+	},
+}
 
 func Test_LiquidityProvider_SingleNetwork(t *testing.T) {
 	ctrl := gomock.NewController(t)

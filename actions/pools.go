@@ -29,5 +29,3 @@ func LiquidityPools(
 
 	return pools, nil
 }
-
-

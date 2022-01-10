@@ -1,9 +1,10 @@
 package actions
 
 import (
-	"github.com/ahstn/defair/domain"
 	"reflect"
 	"testing"
+
+	"github.com/ahstn/defair/domain"
 )
 
 func Test_networkFilter(t *testing.T) {
@@ -28,7 +29,7 @@ func Test_networkFilter(t *testing.T) {
 			want: []string{"harmony", "aurora"},
 		},
 	}
-		for _, tt := range tests {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := networkFilter(tt.args); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("networkFilter() = %v, want %v", got, tt.want)

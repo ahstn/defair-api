@@ -16,7 +16,7 @@ func Test_YamlIndex_Read(t *testing.T) {
 				Endpoint: "test.rpc",
 				Tokens: domain.TokenSources{
 					Additional: []string{"0x123"},
-					Lists: []string{"http"},
+					Lists:      []string{"http"},
 				},
 			},
 			"ftm": {
@@ -25,7 +25,7 @@ func Test_YamlIndex_Read(t *testing.T) {
 					{
 						Name:  "Market1",
 						Token: "Token",
-						Chef: []string{"123"},
+						Chef:  []string{"123"},
 					},
 				},
 			},

@@ -2,12 +2,13 @@ package actions
 
 import (
 	"encoding/json"
-	"github.com/ahstn/defair/domain"
-	"github.com/ahstn/defair/platform"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
+	"github.com/pkg/errors"
 )
 
 // Tokens uses platform.Chain to retrieve a list of token's a Wallet has a positive balance for.

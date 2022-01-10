@@ -41,7 +41,7 @@ type Token struct {
 	TotalSupply float64
 
 	// Ratio is only intended for "Staking" tokens (i.e. xJoe, xJewel, xSushi), for the ratio to Gov Tokens.
-	Ratio       float64
+	Ratio float64
 }
 
 // LiquidityPool represents a pool existing of two ERC20 Balances to provide liquidity for.

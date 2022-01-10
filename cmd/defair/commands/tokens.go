@@ -1,14 +1,15 @@
 package commands
 
 import (
-"fmt"
-"github.com/ahstn/defair/domain"
-"github.com/ahstn/defair/platform"
-"log"
+	"fmt"
+	"log"
 	"strings"
 
+	"github.com/ahstn/defair/domain"
+	"github.com/ahstn/defair/platform"
+
 	"github.com/ahstn/defair/actions"
-"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v2"
 )
 
 // Tokens defines the necessary flags and action for retrieving a wallet's tokens.
