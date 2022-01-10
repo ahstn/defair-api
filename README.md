@@ -12,6 +12,8 @@
 
 > Aiming to make navigating & tracking decentralised finance fair for all.
 
+**NB:** Currently learning & experimenting with Rust to investigate it's performance benefits, and due to the increase of it's usage in Crypto. If it works out better, I'll maybe keep some of the code in this repo for a single service, i.e. aggregating multiple token lists across chains to provide token data and prices. 
+
 ## Contributing
 Building & running Go application:
 ```bash
